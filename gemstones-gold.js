@@ -37,9 +37,21 @@ class GemStonesGold {
 		return result;
 	}
 
-	randomIntFromInterval(min, max) {
-		return Math.floor(Math.random() * (max - min + 1)) + min;
-	}
+	 randomCustom() {
+		let rand = Math.random() * 100;
+		
+		if (rand < 95) { 
+		  return Math.floor(2 + Math.random() * (8 - 2 + 1)); 
+		} else if (rand < 99) { 
+		  return Math.floor(9 + Math.random() * (100 - 9 + 1));
+		} else if (rand < 100) {
+		  return Math.floor(101 + Math.random() * (200 - 101 + 1));
+		} else {
+		  return Math.floor(201 + Math.random() * (500 - 201 + 1));
+		}
+	  }
+	  
+	  
 
 	genMultipliers() {
 		let newSet = new Set();
@@ -48,8 +60,8 @@ class GemStonesGold {
 			if (!this.multiplierSets[index])
 				this.multiplierSets[index] = {
 					reel: index,
-					value: this.randomIntFromInterval(2, 500),
-					level: 3,
+					value: this.randomCustom(),
+					level: 1,
 				};
 			newSet.add(index);
 			if (Array.from(newSet).length == 3) break;
@@ -173,20 +185,29 @@ class GemStonesGold {
 			this.trigger('spinWin', this.clusters);
 			this.trigger('SpinMultiplier', 1);
 		} else {
+			let multiplier = this.multiplierSets.reduce((prev, curr) => {
+				console.log(curr);
+				if (curr && curr.level == 0) {
+					return prev + curr.value;
+				}
+				return prev;
+			}, 0);
 			this.remove('spinWin');
+			this.trigger('SpinMultiplier', multiplier || 1);
 		}
 
 		this.trigger('playedSpin', playedSpin);
 		this.playedSpin = playedSpin;
 	}
 	spin() {
+		if (this.clusters.length) {
+			this.processMultiplierSet();
+		}
 		if (this.respinCount == 0) this.genMultipliers();
 		this.processCascade();
 		this.trigger('playWindow', this.reels);
 		this.processSpinWin();
-		if (this.clusters.length) {
-			this.processMultiplierSet();
-		}
+
 		this.trigger('respinCount', ++this.respinCount);
 		this.results.push(this.copy(this.events));
 	}

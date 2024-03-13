@@ -216,7 +216,8 @@ class BuffalloWin {
 
 		for(let idx = 0; idx < this.reels[0].length; idx++) {
 			let checkedSymbol = this.reels[0][idx];
-			let setReels = new Set([0]);
+			let setReels = new Set();
+			setReels.add(0);
 			for(let reelIdx = 1; reelIdx < this.reels.length; reelIdx++) {
 				for(let rowIdx = 0; rowIdx < this.reels[reelIdx].length; rowIdx++) {
 					if(this.reels[reelIdx][rowIdx] == checkedSymbol || this.reels[reelIdx][rowIdx] == 'WILD') {
