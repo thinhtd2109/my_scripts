@@ -6,11 +6,20 @@ class FortuneDragon {
 			1: 'PIC1',
 			2: 'PIC2',
 			3: 'PIC3',
-			4: 'PIC5',
-			5: 'PIC6',
-			6: 'PIC7',
+			4: 'PIC4',
+			5: 'PIC5',
+			6: 'PIC6',
 		};
 		this.events = [];
+		this.symbolsPay = {
+			WILD: 100,
+			PIC1: 50,
+			PIC2: 25,
+			PIC3: 10,
+			PIC4: 5,
+			PIC5: 3,
+			PIC6: 2,
+		};
 		this.lines = [
 			[
 				{ reel: 0, row: 1 },
@@ -38,7 +47,7 @@ class FortuneDragon {
 				{ reel: 2, row: 0 },
 			],
 		];
-		this.reels = this.genPlayWindow();
+		this.reels = this.genPlayWindow()
 	}
 	randomIntFromInterval(min, max) {
 		return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -86,19 +95,19 @@ class FortuneDragon {
 		this.lines.forEach((line, index) => {
 			let newSet = new Set();
 			let symbol;
+            let pay = 0;
 
 			line.forEach((cell) => {
 				if (this.reels[cell.reel][cell.row] !== 'WILD') symbol = this.reels[cell.reel][cell.row];
+                pay += this.symbolsPay[this.reels[cell.reel][cell.row]];
 				newSet.add(this.reels[cell.reel][cell.row]);
 			});
-			if ((Array.from(newSet).length == 2 && Array.from(newSet).includes('WILD')) || Array.from(newSet).length == 1) {
-				this.spinWins.push({ symbol: symbol || 'WILD', context: line });
+			if (([...newSet].length == 2 && [...newSet].includes('WILD')) || [...newSet].length == 1) {
+				this.spinWins.push({ symbol: symbol || 'WILD', context: line, pay: pay });
 			}
 		});
-
-		this.trigger('spinWin', this.spinWins);
+        this.trigger('spinWins', this.spinWins);
 	}
-
 	//---------------------------------------------------------------------------------
 	//---------------------------------------------------------------------------------
 	spin() {
