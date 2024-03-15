@@ -226,7 +226,7 @@ class BuffalloWin {
 				}
 			};
 
-			if(Array.from(setReels).length == this.reels.length) {
+			if(setReels.size == this.reels.length) {
 				this.countScatters++;
 				symbolsMap.set(checkedSymbol, { cells: [], symbol: checkedSymbol })
 			}
